@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#define MAXN 1024
+
+char* vigenere_encrypt(char* plaintext, char* key)
+{
+    int lenght = strlen(plaintext);
+    int key_lenght = strlen (key);
+    char * cypher = (char*) malloc(sizeof(char) * (lenght + 1));
+    int index = 0;
+    while(plaintext[index] != '\0')
+    {
+        int shift = tolower(key[index % key_lenght]) - 'a';
+        if(islower(plaintext[index]))
+        {
+            cypher[index] = 'a' + (plaintext[index] - 'a' + shift) % 26;
+        }
+        else if(isupper(plaintext[index]))
+        {
+            cypher[index] = 'A' + (plaintext[index] - 'A' + shift) % 26; 
+        }
+        else
+        {
+            cypher[index] = plaintext[index];
+        }
+        index++;
+    }
+    cypher[index] = '\0';
+    return cypher;
+}
+char* vigenere_decrypt(char* cypher, char* key)
+{
+    int lenght = strlen(cypher);
+    int key_lenght = strlen (key);
+    char * plaintext = (char*) malloc(sizeof(char) * (lenght + 1));
+    int index = 0;
+    while(cypher[index] != '\0')
+    {
+        int shift = tolower(key[index % key_lenght]) - 'a';
+        if(islower(cypher[index]))
+        {
+            plaintext[index] = 'a' + (cypher[index] - 'a' - shift + 26) % 26;
+        }
+        else if(isupper(cypher[index]))
+        {
+            plaintext[index] = 'A' + (cypher[index] - 'A' - shift + 26) % 26; 
+        }
+        else
+        {
+            plaintext[index] = cypher[index];
+        }
+        index++;
+    }
+    plaintext[index] = '\0';
+    return plaintext;
+}
+
+
+int main()
+{
+    char plaintext[MAXN];
+    scanf("%s", plaintext);
+    
+    char key[MAXN];
+    scanf("%s", key);
+    
+    char* result = vigenere_encrypt(plaintext, key);
+    printf("Encrypted message: %s", result);
+    
+    char* decrypted = vigenere_decrypt(result, key);
+    printf("Decrypted message: %s", decrypted);
+
+    return EXIT_SUCCESS;
+}
